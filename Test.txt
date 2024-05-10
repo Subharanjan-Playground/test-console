@@ -1,0 +1,68 @@
+# User and group to run as
+user  nginx;
+worker_processes  1;
+
+# Error log and PID location
+error_log  logs/error.log;
+pid        logs/nginx.pid;
+
+# Events
+events {
+    worker_connections  1024;
+}
+
+# HTTP server
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    # Log format
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  logs/access.log  main;
+
+    # Sendfile
+    sendfile        on;
+    # TCP optimization
+    tcp_nopush     on;
+    tcp_nodelay    on;
+
+    # Keepalive
+    keepalive_timeout  65;
+
+    # Compression
+    gzip  on;
+    gzip_disable "msie6";
+
+    # Proxy settings for SonarQube
+    upstream sonarqube {
+        server 10.43.12.344:9000;
+    }
+
+    # Server settings
+    server {
+        listen       80;
+        server_name  sonarqube.test.com;
+
+        # Root directory
+        root   html;
+        index  index.html index.htm;
+
+        # Proxy pass to SonarQube
+        location / {
+            proxy_pass http://sonarqube;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # Error pages
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+    }
+}
