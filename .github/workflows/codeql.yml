@@ -96,9 +96,7 @@ jobs:
     - name: Download SARIF file
       run: |
         mkdir -p sarif
-        curl -sSL -o sarif/codeql-results.sarif $CODEQL_ACTION_PATH
-      env:
-        CODEQL_ACTION_PATH: ${{ steps.perform_codeql_analysis.outputs.sarif_file }}
+        cp "${{ steps.perform_codeql_analysis.outputs.sarif_file }}" sarif/codeql-results.sarif
 
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v3
