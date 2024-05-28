@@ -88,6 +88,19 @@ jobs:
         exit 1
 
     - name: Perform CodeQL Analysis
+      id: perform_codeql_analysis
       uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{matrix.language}}"
+      
+    - name: Download SARIF file
+      run: |
+        mkdir -p sarif
+        curl -sSL -o sarif/codeql-results.sarif $CODEQL_ACTION_PATH
+      env:
+        CODEQL_ACTION_PATH: ${{ steps.perform_codeql_analysis.outputs.sarif_file }}
+
+    - name: Upload SARIF file
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: sarif/codeql-results.sarif
