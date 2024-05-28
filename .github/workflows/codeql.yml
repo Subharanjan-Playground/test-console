@@ -58,7 +58,8 @@ jobs:
       with:
         category: "/language:${{matrix.language}}"
       
-    - uses: actions/upload-artifact@v4
-      with: 
-       name: csharp.zip
-       path: /home/runner/work/test-console/results/csharp.sarif
+    - name: Upload SARIF file
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+          # Path to SARIF file relative to the root of the repository
+          sarif_file: /home/runner/work/test-console/results/csharp.sarif
