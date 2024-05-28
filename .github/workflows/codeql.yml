@@ -62,3 +62,8 @@ jobs:
       with: 
        name: csharp.zip
        path: /home/runner/work/_temp/codeql_databases/csharp.zip
+
+    - uses: actions/download-artifact@v4
+      with:
+       name: csharp.zip
+       path: /home/runner/work/_temp/codeql_databases/csharp.zip
