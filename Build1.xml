@@ -15,7 +15,7 @@
         <mkdir dir="${dist.dir}"/>
     </target>
 
-    <!-- Copy resources -->
+    <!-- Copy resources (if any) -->
     <target name="copy-resources" depends="init">
         <copy todir="${build.dir}">
             <fileset dir="${src.dir}" includes="**/*.properties, **/*.xml, **/*.txt"/>
@@ -34,7 +34,8 @@
     <!-- Create the JAR file -->
     <target name="jar" depends="compile">
         <mkdir dir="${dist.dir}"/>
-        <jar destfile="${dist.dir}/${jar.name}" basedir="${build.dir}">
+        <jar destfile="${dist.dir}/${jar.name}">
+            <fileset dir="${build.dir}" includes="**/*.class"/>
             <manifest>
                 <attribute name="Main-Class" value="${main.class}"/>
             </manifest>
