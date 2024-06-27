@@ -15,8 +15,15 @@
         <mkdir dir="${dist.dir}"/>
     </target>
 
+    <!-- Copy resources -->
+    <target name="copy-resources" depends="init">
+        <copy todir="${build.dir}">
+            <fileset dir="${src.dir}" includes="**/*.properties, **/*.xml, **/*.txt"/>
+        </copy>
+    </target>
+
     <!-- Compile the Java source files -->
-    <target name="compile" depends="init">
+    <target name="compile" depends="copy-resources">
         <javac srcdir="${src.dir}" destdir="${build.dir}" includeantruntime="false">
             <classpath>
                 <fileset dir="${lib.dir}" includes="**/*.jar"/>
